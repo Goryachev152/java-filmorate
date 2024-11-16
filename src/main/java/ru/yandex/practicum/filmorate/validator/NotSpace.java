@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = validateNotSpace.class)
+@Constraint(validatedBy = ValidateNotSpace.class)
 public @interface NotSpace {
     String message() default "Логин не должен содержать пробелы";
     Class<?>[] groups() default {};

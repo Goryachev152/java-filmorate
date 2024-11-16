@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = validateDataCheck.class)
+@Constraint(validatedBy = ValidateDataCheck.class)
 public @interface DataCheck {
     String message() default "дата релиза должна быть не раньше 28 декабря 1895 года";
     Class<?>[] groups() default {};

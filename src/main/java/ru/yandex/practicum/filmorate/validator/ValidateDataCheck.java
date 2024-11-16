@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.time.LocalDate;
 
-public class validateDataCheck implements ConstraintValidator<DataCheck, LocalDate> {
+public class ValidateDataCheck implements ConstraintValidator<DataCheck, LocalDate> {
 
     @Override
     public boolean isValid(LocalDate localDate, ConstraintValidatorContext constraintValidatorContext) {
