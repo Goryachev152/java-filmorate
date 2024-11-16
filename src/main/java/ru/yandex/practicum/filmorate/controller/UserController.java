@@ -30,7 +30,7 @@ public class UserController {
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
         if (user.getName() == null || user.getName().isBlank()) {
-            log.info("Пользователь id {} использует логин вместо имени", user.getId() );
+            log.info("Пользователь id {} использует логин вместо имени", user.getId());
             user = user.toBuilder()
                     .id(getNextId())
                     .name(user.getLogin())
