@@ -20,24 +20,24 @@ import java.util.Map;
 @RequestMapping("/films")
 public class FilmController {
 
-    private Map<Integer, Film> filmMap = new HashMap<>();
+    private Map<Integer, Film> filmById = new HashMap<>();
 
     @GetMapping
     public Collection<Film> getFilms() {
-        return filmMap.values();
+        return filmById.values();
     }
 
     @PostMapping
     public Film createFilm(@Valid @RequestBody Film film) {
         film = film.toBuilder().id(getNextId()).build();
-        filmMap.put(film.getId(), film);
+        filmById.put(film.getId(), film);
         log.info("Фильм с id {} добавлен в сервис", film.getId());
         return film;
     }
 
     @PutMapping
     public Film updateFilm(@Valid @RequestBody Film updateFilm) {
-        if (!filmMap.containsKey(updateFilm.getId())) {
+        if (!filmById.containsKey(updateFilm.getId())) {
             log.error("Фильм с id {} не найден", updateFilm.getId());
             throw new ValidationException("Фильм с таким id = " + updateFilm.getId() + " не найден");
         }
@@ -48,13 +48,13 @@ public class FilmController {
                 .releaseDate(updateFilm.getReleaseDate())
                 .duration(updateFilm.getDuration())
                 .build();
-        filmMap.put(updateFilm.getId(), oldFilm);
+        filmById.put(updateFilm.getId(), oldFilm);
         log.info("Фильм с id {} обновлен в сервисе", updateFilm.getId());
         return oldFilm;
     }
 
     private int getNextId() {
-        int currentMaxId = filmMap.keySet()
+        int currentMaxId = filmById.keySet()
                 .stream()
                 .mapToInt(id -> id)
                 .max()

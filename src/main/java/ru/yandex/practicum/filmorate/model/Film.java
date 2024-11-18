@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Value;
 import ru.yandex.practicum.filmorate.validator.DataCheck;
 
 import java.time.LocalDate;
@@ -14,20 +15,20 @@ import java.time.LocalDate;
 /**
  * Film.
  */
-@Data
+@Value
 @EqualsAndHashCode(of = "id")
 @Builder(toBuilder = true)
 public class Film {
 
-    private Integer id;
+    Integer id;
     @NotBlank(message = "Название не может быть пустым")
-    private String name;
+    String name;
     @Size(max = 200, message = "Максимальная длина описания - 200 символов")
-    private String description;
+    String description;
     @NotNull(message = "Дата указана некорректо или не указана вообще")
     @DataCheck
-    private LocalDate releaseDate;
+    LocalDate releaseDate;
     @NotNull
     @Positive(message = "Продолжительность фильма должна быть положительным числом")
-    private Integer duration;
+    Integer duration;
 }

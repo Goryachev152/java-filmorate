@@ -20,11 +20,11 @@ import java.util.Map;
 @RequestMapping("/users")
 public class UserController {
 
-    private Map<Integer, User> userMap = new HashMap<>();
+    private Map<Integer, User> userById = new HashMap<>();
 
     @GetMapping
     public Collection<User> getUsers() {
-        return userMap.values();
+        return userById.values();
     }
 
     @PostMapping
@@ -35,12 +35,12 @@ public class UserController {
                     .id(getNextId())
                     .name(user.getLogin())
                     .build();
-            userMap.put(user.getId(), user);
+            userById.put(user.getId(), user);
             log.info("Пользователь с id {} добавлен в сервис", user.getId());
             return user;
         } else {
             user = user.toBuilder().id(getNextId()).build();
-            userMap.put(user.getId(), user);
+            userById.put(user.getId(), user);
             log.info("Пользователь с id {} добавлен в сервис", user.getId());
             return user;
         }
@@ -49,7 +49,7 @@ public class UserController {
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User updateUser) {
-        if (!userMap.containsKey(updateUser.getId())) {
+        if (!userById.containsKey(updateUser.getId())) {
             log.error("Пользователь с id {} не найден", updateUser.getId());
             throw new ValidationException("Пользователь с id " + updateUser.getId() + " не найден");
         }
@@ -61,7 +61,7 @@ public class UserController {
                     .name(updateUser.getLogin())
                     .birthday(updateUser.getBirthday())
                     .build();
-            userMap.put(updateUser.getId(), oldUser);
+            userById.put(updateUser.getId(), oldUser);
             log.info("Пользователь с id {} добавлен в сервис", updateUser.getId());
             return oldUser;
         } else {
@@ -72,14 +72,14 @@ public class UserController {
                     .name(updateUser.getName())
                     .birthday(updateUser.getBirthday())
                     .build();
-            userMap.put(updateUser.getId(), oldUser);
+            userById.put(updateUser.getId(), oldUser);
             log.info("Пользователь с id {} добавлен в сервис", updateUser.getId());
             return oldUser;
         }
     }
 
     private int getNextId() {
-        int currentMaxId = userMap.keySet()
+        int currentMaxId = userById.keySet()
                 .stream()
                 .mapToInt(id -> id)
                 .max()
