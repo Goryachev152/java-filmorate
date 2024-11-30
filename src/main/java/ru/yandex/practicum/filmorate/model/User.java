@@ -10,6 +10,8 @@ import lombok.Value;
 import ru.yandex.practicum.filmorate.validator.NotSpace;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Value
 @EqualsAndHashCode(of = "email")
@@ -27,4 +29,5 @@ public class User {
     @NotNull
     @Past(message = "Дата рождения не может быть в будущем")
     LocalDate birthday;
+    Set<Integer> friends = new HashSet<>();
 }

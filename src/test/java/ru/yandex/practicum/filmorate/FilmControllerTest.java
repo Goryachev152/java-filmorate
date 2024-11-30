@@ -12,6 +12,9 @@ import org.springframework.context.ConfigurableApplicationContext;
 import ru.yandex.practicum.filmorate.adapters.LocalDateAdapter;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
+import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.io.IOException;
 import java.net.URI;
@@ -37,7 +40,7 @@ public class FilmControllerTest {
 
         httpClient = HttpClient.newHttpClient();
         uri = URI.create("http://localhost:8080/films");
-        filmController = new FilmController();
+        filmController = new FilmController(new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
         film = Film.builder()
                 .name("Name")
                 .description("Description")
