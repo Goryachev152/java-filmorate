@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -18,39 +18,24 @@ public class UserService {
 
     private final UserStorage userStorage;
 
-    public Collection<User> getUsers() {
+    public List<User> getUsers() {
         return userStorage.getUsers();
     }
 
     public User getUserId(Integer id) {
-        if (userStorage.findById(id).isEmpty()) {
-            log.error("Пользователь с id {} не найден", id);
-            throw new NotFoundException("Пользователь с id " + id + " не найден");
-        }
+        validNotFoundUser(id);
         return userStorage.getUserId(id);
     }
 
     public Set<User> getListFriends(Integer id) {
-        if (userStorage.findById(id).isEmpty()) {
-            log.error("Пользователь с id {} не найден", id);
-            throw new NotFoundException("Пользователь с id " + id + " не найден");
-        }
+        validNotFoundUser(id);
         return userStorage.getListFriends(id);
     }
 
     public Set<User> getListCommonFriends(Integer idUser, Integer otherId) {
-        if (userStorage.findById(idUser).isEmpty()) {
-            log.error("Пользователь с id {} не найден", idUser);
-            throw new NotFoundException("Пользователь с id " + idUser + " не найден");
-        }
-        if (userStorage.findById(otherId).isEmpty()) {
-            log.error("Пользователь с id1 {} не найден", otherId);
-            throw new NotFoundException("Пользователь с id " + otherId + " не найден");
-        }
-        if (idUser.equals(otherId)) {
-            log.error("Это один и тот же пользователь с id {}", idUser);
-            throw new ValidationException("Это один и тот же пользователь");
-        }
+        validNotFoundUser(idUser);
+        validNotFoundUser(otherId);
+        validEqualsUser(idUser, otherId);
         return userStorage.getListCommonFriends(idUser, otherId);
     }
 
@@ -59,44 +44,35 @@ public class UserService {
     }
 
     public User updateUser(User updateUser) {
-        if (userStorage.findById(updateUser.getId()).isEmpty()) {
-            log.error("Пользователь с id {} не найден", updateUser.getId());
-            throw new NotFoundException("Пользователь с id " + updateUser.getId() + " не найден");
-        }
+        validNotFoundUser(updateUser.getId());
         return userStorage.updateUser(updateUser);
     }
 
     public User addFriends(Integer idUser, Integer idFriend) {
-        if (userStorage.findById(idUser).isEmpty()) {
-            log.error("Пользователь с id {} не найден", idUser);
-            throw new NotFoundException("Пользователь с id " + idUser + " не найден");
-        }
-        if (userStorage.findById(idFriend).isEmpty()) {
-            log.error("Пользователь с id {} не найден", idFriend);
-            throw new NotFoundException("Пользователь с id " + idFriend + " не найден");
-        }
-        if (idUser.equals(idFriend)) {
-            log.error("Это один и тот же пользователь с id {}", idUser);
-            throw new ValidationException("Пользователь не может добавить в друзья самого себя");
-        }
+        validNotFoundUser(idUser);
+        validNotFoundUser(idFriend);
+        validEqualsUser(idUser, idFriend);
         log.info("Пользователь с id={} и пользователь с id={} стали друзьями", idUser, idFriend);
         return userStorage.addFriends(idUser, idFriend);
     }
 
     public User deleteFriend(Integer idUser, Integer idFriend) {
-        if (userStorage.findById(idUser).isEmpty()) {
-            log.error("Пользователь с id {} не найден", idUser);
-            throw new NotFoundException("Пользователь с id " + idUser + " не найден");
-        }
-        if (userStorage.findById(idFriend).isEmpty()) {
-            log.error("Пользователь с id {} не найден", idFriend);
-            throw new NotFoundException("Пользователь с id " + idFriend + " не найден");
-        }
-        if (idUser.equals(idFriend)) {
-            log.error("Это один и тот же пользователь с id {}", idUser);
-            throw new ValidationException("Пользователь не может удалить из друзей самого себя");
-        }
+        validNotFoundUser(idUser);
+        validNotFoundUser(idFriend);
+        validEqualsUser(idUser, idFriend);
         log.info("Пользователь с id={} удалил из друзей пользователя с id={}", idUser, idFriend);
         return userStorage.deleteFriend(idUser, idFriend);
+    }
+
+    private void validNotFoundUser(Integer id) {
+        if (userStorage.findById(id).isEmpty()) {
+            throw new NotFoundException("Пользователь с id " + id + " не найден");
+        }
+    }
+
+    private void validEqualsUser(Integer idUser, Integer idFriend) {
+        if (idUser.equals(idFriend)) {
+            throw new ValidationException("Это один и тот же пользователь");
+        }
     }
 }

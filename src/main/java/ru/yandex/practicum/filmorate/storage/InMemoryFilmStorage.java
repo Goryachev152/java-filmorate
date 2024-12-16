@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -15,12 +17,21 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private Map<Integer, Film> filmById = new HashMap<>();
 
-    public Collection<Film> getFilms() {
-        return filmById.values();
+    public List<Film> getFilms() {
+        return new ArrayList<>(filmById.values());
     }
 
     public Film getFilmId(Integer id) {
         return filmById.get(id);
+    }
+
+    public List<Film> getPopularFilms(Integer count) {
+        Comparator<Film> filmComparator = Comparator.comparingInt(film -> film.getListLike().size());
+        return getFilms()
+                .stream()
+                .sorted(filmComparator.reversed())
+                .limit(count)
+                .toList();
     }
 
     public Film createFilm(Film film) {

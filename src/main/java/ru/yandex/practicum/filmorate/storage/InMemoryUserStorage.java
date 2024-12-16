@@ -4,9 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -18,8 +19,8 @@ public class InMemoryUserStorage implements UserStorage {
 
     private Map<Integer, User> userById = new HashMap<>();
 
-    public Collection<User> getUsers() {
-        return userById.values();
+    public List<User> getUsers() {
+        return new ArrayList<>(userById.values());
     }
 
     public User getUserId(Integer id) {

@@ -14,7 +14,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidation(final ParameterNotValidException e) {
+    public ErrorResponse handleParameterNotValidation(final ParameterNotValidException e) {
         return new ErrorResponse("error: Некорректное значение параметра " + e.getParameter() + ": " + e.getReason());
     }
 
