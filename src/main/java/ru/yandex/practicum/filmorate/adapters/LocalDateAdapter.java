@@ -11,14 +11,12 @@ import java.util.Objects;
 
 public class LocalDateAdapter extends TypeAdapter<LocalDate> {
 
-    private static final DateTimeFormatter DTF = DateTimeFormatter.ISO_DATE;
-
     @Override
     public void write(JsonWriter jsonWriter, LocalDate value) throws IOException {
         if (Objects.isNull(value)) {
             jsonWriter.value("null");
         } else {
-            jsonWriter.value(value.format(DTF));
+            jsonWriter.value(value.format(DateTimeFormatter.ISO_DATE));
         }
     }
 
@@ -26,7 +24,7 @@ public class LocalDateAdapter extends TypeAdapter<LocalDate> {
     public LocalDate read(JsonReader jsonReader) throws IOException {
         LocalDate date;
         try {
-            date = LocalDate.parse(jsonReader.nextString(), DTF);
+            date = LocalDate.parse(jsonReader.nextString(), DateTimeFormatter.ISO_DATE);
         } catch (DateTimeParseException ex) {
             date = null;
         }

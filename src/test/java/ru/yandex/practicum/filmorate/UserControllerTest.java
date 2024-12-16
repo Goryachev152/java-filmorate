@@ -11,6 +11,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import ru.yandex.practicum.filmorate.adapters.LocalDateAdapter;
 import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.io.IOException;
 import java.net.URI;
@@ -35,7 +37,7 @@ public class UserControllerTest {
 
         httpClient = HttpClient.newHttpClient();
         uri = URI.create("http://localhost:8080/users");
-        userController = new UserController();
+        userController = new UserController(new UserService(new InMemoryUserStorage()));
         user = User.builder()
                 .login("login")
                 .name("name")
