@@ -10,7 +10,7 @@ import lombok.Value;
 import ru.yandex.practicum.filmorate.validator.DataCheck;
 
 import java.time.LocalDate;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,7 +21,7 @@ import java.util.Set;
 @Builder(toBuilder = true)
 public class Film {
 
-    Integer id;
+    Long id;
     @NotBlank(message = "Название не может быть пустым")
     String name;
     @Size(max = 200, message = "Максимальная длина описания - 200 символов")
@@ -32,5 +32,7 @@ public class Film {
     @NotNull
     @Positive(message = "Продолжительность фильма должна быть положительным числом")
     Integer duration;
-    Set<Integer> listLike = new HashSet<>();
+    Set<Integer> like;
+    Mpa mpa;
+    List<Genre> genres;
 }

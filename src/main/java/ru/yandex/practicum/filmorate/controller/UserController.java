@@ -15,7 +15,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -36,12 +35,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}/friends")
-    public Set<User> getListFriends(@PathVariable Integer id) {
+    public List<User> getListFriends(@PathVariable Integer id) {
         return userService.getListFriends(id);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Set<User> getListCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
+    public List<User> getListCommonFriends(@PathVariable Integer id, @PathVariable Integer otherId) {
         return userService.getListCommonFriends(id, otherId);
     }
 
@@ -50,18 +49,18 @@ public class UserController {
         return userService.createUser(user);
     }
 
-    @PutMapping
+    @PutMapping()
     public User updateUser(@Valid @RequestBody User updateUser) {
         return userService.updateUser(updateUser);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
-        return userService.addFriends(id, friendId);
+    public void addFriends(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.addFriends(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
-    public User deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
-        return userService.deleteFriend(id, friendId);
+    public void deleteFriend(@PathVariable Integer id, @PathVariable Integer friendId) {
+        userService.deleteFriend(id, friendId);
     }
 }

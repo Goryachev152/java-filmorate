@@ -3,13 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @Slf4j
@@ -17,26 +16,24 @@ import java.util.Set;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final FriendshipStorage friendshipStorage;
 
     public List<User> getUsers() {
         return userStorage.getUsers();
     }
 
     public User getUserId(Integer id) {
-        validNotFoundUser(id);
         return userStorage.getUserId(id);
     }
 
-    public Set<User> getListFriends(Integer id) {
-        validNotFoundUser(id);
-        return userStorage.getListFriends(id);
+    public List<User> getListFriends(Integer id) {
+        //validNotFoundUser(id);
+        return friendshipStorage.getListFriends(id);
     }
 
-    public Set<User> getListCommonFriends(Integer idUser, Integer otherId) {
-        validNotFoundUser(idUser);
-        validNotFoundUser(otherId);
+    public List<User> getListCommonFriends(Integer idUser, Integer otherId) {
         validEqualsUser(idUser, otherId);
-        return userStorage.getListCommonFriends(idUser, otherId);
+        return friendshipStorage.getListCommonFriends(idUser, otherId);
     }
 
     public User createUser(User user) {
@@ -44,30 +41,18 @@ public class UserService {
     }
 
     public User updateUser(User updateUser) {
-        validNotFoundUser(updateUser.getId());
         return userStorage.updateUser(updateUser);
     }
 
-    public User addFriends(Integer idUser, Integer idFriend) {
-        validNotFoundUser(idUser);
-        validNotFoundUser(idFriend);
+    public void addFriends(Integer idUser, Integer idFriend) {
         validEqualsUser(idUser, idFriend);
-        log.info("Пользователь с id={} и пользователь с id={} стали друзьями", idUser, idFriend);
-        return userStorage.addFriends(idUser, idFriend);
+        friendshipStorage.addFriends(idUser, idFriend);
     }
 
-    public User deleteFriend(Integer idUser, Integer idFriend) {
-        validNotFoundUser(idUser);
-        validNotFoundUser(idFriend);
+    public void deleteFriend(Integer idUser, Integer idFriend) {
         validEqualsUser(idUser, idFriend);
         log.info("Пользователь с id={} удалил из друзей пользователя с id={}", idUser, idFriend);
-        return userStorage.deleteFriend(idUser, idFriend);
-    }
-
-    private void validNotFoundUser(Integer id) {
-        if (userStorage.findById(id).isEmpty()) {
-            throw new NotFoundException("Пользователь с id " + id + " не найден");
-        }
+        friendshipStorage.deleteFriend(idUser, idFriend);
     }
 
     private void validEqualsUser(Integer idUser, Integer idFriend) {
