@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FriendshipStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
-import ru.yandex.practicum.filmorate.storage.mappers.UserRowMapper;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -22,7 +21,6 @@ public class FriendshipDbStorage implements FriendshipStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final UserStorage userStorage;
-    private final UserRowMapper userRowMapper;
 
     @Override
     public void addFriends(Integer idUser, Integer idFriend) {
