@@ -22,16 +22,16 @@ public class UserService {
         return userStorage.getUsers();
     }
 
-    public User getUserId(Integer id) {
+    public User getUserId(Long id) {
         return userStorage.getUserId(id);
     }
 
-    public List<User> getListFriends(Integer id) {
+    public List<User> getListFriends(Long id) {
         //validNotFoundUser(id);
         return friendshipStorage.getListFriends(id);
     }
 
-    public List<User> getListCommonFriends(Integer idUser, Integer otherId) {
+    public List<User> getListCommonFriends(Long idUser, Long otherId) {
         validEqualsUser(idUser, otherId);
         return friendshipStorage.getListCommonFriends(idUser, otherId);
     }
@@ -44,18 +44,18 @@ public class UserService {
         return userStorage.updateUser(updateUser);
     }
 
-    public void addFriends(Integer idUser, Integer idFriend) {
+    public void addFriends(Long idUser, Long idFriend) {
         validEqualsUser(idUser, idFriend);
         friendshipStorage.addFriends(idUser, idFriend);
     }
 
-    public void deleteFriend(Integer idUser, Integer idFriend) {
+    public void deleteFriend(Long idUser, Long idFriend) {
         validEqualsUser(idUser, idFriend);
         log.info("Пользователь с id={} удалил из друзей пользователя с id={}", idUser, idFriend);
         friendshipStorage.deleteFriend(idUser, idFriend);
     }
 
-    private void validEqualsUser(Integer idUser, Integer idFriend) {
+    private void validEqualsUser(Long idUser, Long idFriend) {
         if (idUser.equals(idFriend)) {
             throw new ValidationException("Это один и тот же пользователь");
         }

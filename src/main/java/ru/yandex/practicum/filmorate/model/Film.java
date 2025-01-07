@@ -32,7 +32,7 @@ public class Film {
     @NotNull
     @Positive(message = "Продолжительность фильма должна быть положительным числом")
     Integer duration;
-    Set<Integer> like;
+    Set<Long> like;
     Mpa mpa;
     List<Genre> genres;
 }

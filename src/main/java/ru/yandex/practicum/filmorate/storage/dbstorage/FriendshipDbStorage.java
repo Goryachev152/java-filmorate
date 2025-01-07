@@ -23,7 +23,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
     private final UserStorage userStorage;
 
     @Override
-    public void addFriends(Integer idUser, Integer idFriend) {
+    public void addFriends(Long idUser, Long idFriend) {
         Optional<User> mainUser = Optional.ofNullable(userStorage.getUserId(idUser));
         Optional<User> friendUser = Optional.ofNullable(userStorage.getUserId(idFriend));
 
@@ -59,7 +59,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
     }
 
     @Override
-    public void deleteFriend(Integer idUser, Integer idFriend) {
+    public void deleteFriend(Long idUser, Long idFriend) {
         Optional<User> user = Optional.ofNullable(userStorage.getUserId(idUser));
         Optional<User> friendUser = Optional.ofNullable(userStorage.getUserId(idFriend));
         if (user.isPresent() && friendUser.isPresent()) {
@@ -76,12 +76,12 @@ public class FriendshipDbStorage implements FriendshipStorage {
     }
 
     @Override
-    public List<User> getListFriends(Integer id) {
+    public List<User> getListFriends(Long id) {
         Optional<User> user = Optional.ofNullable(userStorage.getUserId(id));
         if (user.isPresent()) {
             String getListFriendsSql = "SELECT freind_id " +
                     "FROM friendship WHERE user_id = ?";
-            List<Integer> idFriends = jdbcTemplate.queryForList(getListFriendsSql, Integer.class, id);
+            List<Long> idFriends = jdbcTemplate.queryForList(getListFriendsSql, Long.class, id);
             List<User> result = userStorage.getUsers().stream()
                     .filter(user1 -> idFriends.contains(user1.getId()))
                     .collect(Collectors.toList());
@@ -92,7 +92,7 @@ public class FriendshipDbStorage implements FriendshipStorage {
     }
 
     @Override
-    public List<User> getListCommonFriends(Integer idUser, Integer otherId) {
+    public List<User> getListCommonFriends(Long idUser, Long otherId) {
         Optional<User> user = Optional.ofNullable(userStorage.getUserId(idUser));
         Optional<User> friendUser = Optional.ofNullable(userStorage.getUserId(otherId));
         if (user.isEmpty()) {

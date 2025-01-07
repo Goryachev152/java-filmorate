@@ -32,7 +32,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
-    public User getUserId(Integer id) {
+    public User getUserId(Long id) {
         String getUserSql = "SELECT id, email, login, name, birthday " +
                 "FROM users WHERE id = ?";
         Optional<User> resultUser;
@@ -61,7 +61,7 @@ public class UserDbStorage implements UserStorage {
                     .build();
         }
         User finalUser = user;
-        Integer userId;
+        Long userId;
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(createSql, new String[]{"id"});
             stmt.setString(1, finalUser.getEmail());
@@ -71,7 +71,7 @@ public class UserDbStorage implements UserStorage {
             return stmt;
         }, keyHolder);
         if (Objects.nonNull(keyHolder.getKey())) {
-            userId = keyHolder.getKey().intValue();
+            userId = keyHolder.getKey().longValue();
         } else {
             throw new NotFoundException("Ошибка добавления пользователя в таблицу");
         }
@@ -88,7 +88,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User updateUser(User updateUser) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        Integer userId;
+        Long userId;
         String updateSql = "UPDATE users SET " +
                 "email = ?, login = ?, name = ?, birthday = ? " +
                 "where id = ?";
@@ -99,11 +99,11 @@ public class UserDbStorage implements UserStorage {
             stmt.setString(2, updateUser.getLogin());
             stmt.setString(3, updateUser.getName());
             stmt.setString(4, updateUser.getBirthday().toString());
-            stmt.setInt(5, updateUser.getId());
+            stmt.setLong(5, updateUser.getId());
             return stmt;
         }, keyHolder);
         if (Objects.nonNull(keyHolder.getKey())) {
-            userId = keyHolder.getKey().intValue();
+            userId = keyHolder.getKey().longValue();
         } else {
             throw new NotFoundException("Ошибка обновления пользователя");
         }

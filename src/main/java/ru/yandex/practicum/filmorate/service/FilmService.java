@@ -41,11 +41,11 @@ public class FilmService {
         return filmStorage.updateFilm(updateFilm);
     }
 
-    public void likeFilmUser(Long idFilm, Integer idUser) {
-        likeFilmStorage.likeFilmUser(idFilm, idUser);
+    public void addLikeFilmUser(Long idFilm, Long idUser) {
+        likeFilmStorage.addLikeFilmUser(idFilm, idUser);
     }
 
-    public void deleteLikeFilmUser(Long idFilm, Integer idUser) {
+    public void deleteLikeFilmUser(Long idFilm, Long idUser) {
         likeFilmStorage.deleteLikeFilmUser(idFilm, idUser);
     }
 }

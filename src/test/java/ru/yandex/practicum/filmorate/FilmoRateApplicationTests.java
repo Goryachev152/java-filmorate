@@ -24,7 +24,7 @@ class FilmoRateApplicationTests {
     @Test
     public void testFindUserById() {
 
-        Optional<User> userOptional = Optional.of(userStorage.getUserId(1));
+        Optional<User> userOptional = Optional.of(userStorage.getUserId(1L));
 
         AssertionsForClassTypes.assertThat(userOptional)
                 .isPresent()

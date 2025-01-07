@@ -5,11 +5,11 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.List;
 
 public interface FriendshipStorage {
-    void addFriends(Integer idUser, Integer idFriend);
+    void addFriends(Long idUser, Long idFriend);
 
-    void deleteFriend(Integer idUser, Integer idFriend);
+    void deleteFriend(Long idUser, Long idFriend);
 
-    List<User> getListFriends(Integer id);
+    List<User> getListFriends(Long id);
 
-    List<User> getListCommonFriends(Integer idUser, Integer otherId);
+    List<User> getListCommonFriends(Long idUser, Long otherId);
 }

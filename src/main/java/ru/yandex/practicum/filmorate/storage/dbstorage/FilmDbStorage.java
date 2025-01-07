@@ -159,9 +159,9 @@ public class FilmDbStorage implements FilmStorage {
         }
     }
 
-    public Set<Integer> getLikeFilmId(Long filmId) {
+    public Set<Long> getLikeFilmId(Long filmId) {
         String getLikeSql = "SELECT user_id FROM film_like WHERE film_id = ?";
-        List<Integer> likeList = jdbcTemplate.queryForList(getLikeSql, Integer.class, filmId);
+        List<Long> likeList = jdbcTemplate.queryForList(getLikeSql, Long.class, filmId);
         return new HashSet<>(likeList);
     }
 }

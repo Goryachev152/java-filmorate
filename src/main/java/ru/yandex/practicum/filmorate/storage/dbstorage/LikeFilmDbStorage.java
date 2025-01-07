@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.storage.dbstorage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -27,38 +27,34 @@ public class LikeFilmDbStorage implements LikeFilmStorage {
     private final UserStorage userStorage;
 
     @Override
-    public void likeFilmUser(Long idFilm, Integer idUser) {
+    public void addLikeFilmUser(Long idFilm, Long idUser) {
         Optional<Film> film = Optional.ofNullable(filmStorage.getFilmId(idFilm));
         Optional<User> user = Optional.ofNullable(userStorage.getUserId(idUser));
         if (user.isPresent() && film.isPresent()) {
-            String checkSql = "SELECT film_id FROM film_like WHERE user_id = ?";
-            Optional<Integer> checkId;
-            try {
-                checkId =
-                        Optional.ofNullable(jdbcTemplate.queryForObject(checkSql, Integer.class, idUser));
-                throw new NotFoundException("Пользователь " + idUser + " уже поставил лайк фильму " + idFilm);
-            } catch (EmptyResultDataAccessException e) {
-                checkId = Optional.empty();
-            }
-        String addLikeSql = "INSERT INTO film_like(user_id, film_id) values (?, ?)";
-        jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(addLikeSql);
-            stmt.setInt(1, idUser);
-            stmt.setLong(2, idFilm);
-            return stmt;
-        });
-        film.get().getLike().add(idUser);
-        log.info("Пользователь {} поставил лайк фильму {}", idUser, idFilm);
+                String filmLikeQuery = "INSERT INTO film_like(user_id, film_id) values (?, ?)";
+                int rows = jdbcTemplate.update(connection -> {
+                    PreparedStatement stmt = connection.prepareStatement(filmLikeQuery);
+                    stmt.setLong(1, idUser);
+                    stmt.setLong(2, idFilm);
+                    return stmt;
+                });
 
-    } else if (user.isEmpty()) {
-        throw new NotFoundException("Пользоваетль " + idUser + " не найден");
-    } else if (film.isEmpty()) {
-        throw new NotFoundException("Фильм " + idFilm + " не найден");
-    }
+                if (rows > 0) {
+                    log.info("Пользователь с id = {} поставил лайк фильму с id = {}", idUser, idFilm);
+                } else {
+                    log.error("Ошибка при попытке поставить лайк фильму с id = {}", idFilm);
+                    throw new ValidationException("Ошибка при попытке поставить лайк фильму с id = " + idFilm);
+                }
+
+        } else if (user.isEmpty()) {
+            throw new NotFoundException("Пользоваетль " + idUser + " не найден");
+        } else if (film.isEmpty()) {
+            throw new NotFoundException("Пользоваетль " + idFilm + " не найден");
+        }
     }
 
     @Override
-    public void deleteLikeFilmUser(Long idFilm, Integer idUser) {
+    public void deleteLikeFilmUser(Long idFilm, Long idUser) {
         Optional<User> user = Optional.ofNullable(userStorage.getUserId(idUser));
         Optional<Film> film = Optional.ofNullable(filmStorage.getFilmId(idFilm));
         if (user.isPresent() && film.isPresent()) {
