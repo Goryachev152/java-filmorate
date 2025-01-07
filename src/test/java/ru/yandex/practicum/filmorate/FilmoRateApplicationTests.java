@@ -32,4 +32,4 @@ class FilmoRateApplicationTests {
                         AssertionsForClassTypes.assertThat(user).hasFieldOrPropertyWithValue("id", 1)
                 );
     }
-} 
+}
