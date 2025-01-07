@@ -41,12 +41,7 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getFilms() {
         final String sqlQuery = "SELECT id, name, description, releaseDate, duration, mpa_id FROM films";
         List<Film> listFilm = jdbcTemplate.query(sqlQuery, filmRowMapper::mapRow);
-        return listFilm.stream()
-                .map(film -> film.toBuilder()
-                             .genres(filmGenreStorage.getListGenreFilmId(film.getId()))
-                             .like(getLikeFilmId(film.getId()))
-                             .build())
-                .toList();
+        return listFilm;
     }
 
     @Override
@@ -71,12 +66,8 @@ public class FilmDbStorage implements FilmStorage {
         } else {
             throw new NotFoundException("Ошибка добавления фильма в таблицу");
         }
+        filmGenreStorage.addFilmGenre(filmId, film);
         List<Genre> resultGenres = genreStorage.getExistGenres(film).stream().toList();
-        if (film.getGenres() != null) {
-            for (Genre genre : film.getGenres()) {
-                filmGenreStorage.addFilmGenre(filmId, genre.getId(), film);
-            }
-        }
         return Film.builder()
                 .id(filmId)
                 .name(film.getName())
@@ -111,12 +102,8 @@ public class FilmDbStorage implements FilmStorage {
         } else {
             throw new NotFoundException("Ошибка обновления Фильма");
         }
+        filmGenreStorage.addFilmGenre(film.getId(), film);
         List<Genre> resultGenres = genreStorage.getExistGenres(film).stream().toList();
-        if (film.getGenres() != null) {
-            for (Genre genre : film.getGenres()) {
-                filmGenreStorage.addFilmGenre(film.getId(), genre.getId(), film);
-            }
-        }
         Film resultFilm = Film.builder()
                 .id(filmId)
                 .name(film.getName())
@@ -125,14 +112,14 @@ public class FilmDbStorage implements FilmStorage {
                 .duration(film.getDuration())
                 .mpa(film.getMpa())
                 .genres(resultGenres)
-                .like(getLikeFilmId(filmId))
+                .like(getSetLikeFilmById(filmId))
                 .build();
         if (rows > 0) {
             log.info("Фильм с id = {} успешно обновлён", filmId);
             return resultFilm;
 
         } else {
-            throw new NotFoundException("Фильм с id = " + filmId + " не найден");
+            throw new NotFoundException("Произошла ошибка при обнавлении фильма");
         }
     }
 
@@ -149,17 +136,14 @@ public class FilmDbStorage implements FilmStorage {
             resultFilm = Optional.empty();
         }
         if (resultFilm.isPresent()) {
-            return resultFilm.get().toBuilder()
-                    .genres(filmGenreStorage.getListGenreFilmId(id))
-                    .like(getLikeFilmId(id))
-                    .build();
+            return resultFilm.get();
 
         } else {
             throw new NotFoundException("Фильм с id = " + id + " не найден");
         }
     }
 
-    public Set<Long> getLikeFilmId(Long filmId) {
+    public Set<Long> getSetLikeFilmById(Long filmId) {
         String getLikeSql = "SELECT user_id FROM film_like WHERE film_id = ?";
         List<Long> likeList = jdbcTemplate.queryForList(getLikeSql, Long.class, filmId);
         return new HashSet<>(likeList);

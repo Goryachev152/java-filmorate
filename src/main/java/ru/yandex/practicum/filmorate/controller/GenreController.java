@@ -19,7 +19,7 @@ public class GenreController {
 
     @GetMapping
     public List<Genre> findAll() {
-        return genreService.findAll();
+        return genreService.getAllGenre();
     }
 
     @GetMapping("/{id}")

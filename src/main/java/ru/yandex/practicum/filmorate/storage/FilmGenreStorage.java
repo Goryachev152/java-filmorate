@@ -9,7 +9,7 @@ public interface FilmGenreStorage {
 
     List<Genre> findAll();
 
-    void addFilmGenre(Long filmId, Long genreId, Film film);
+    void addFilmGenre(Long filmId, Film film);
 
-    List<Genre> getListGenreFilmId(Long filmId);
+    List<Genre> getListGenreFilmById(Long filmId);
 }

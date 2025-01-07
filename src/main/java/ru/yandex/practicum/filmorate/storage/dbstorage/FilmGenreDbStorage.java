@@ -26,7 +26,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
     private final GenreRowMapper genreRowMapper;
 
     @Override
-    public void addFilmGenre(Long filmId, Long genreId, Film film) {
+    public void addFilmGenre(Long filmId, Film film) {
         List<Genre> resultGenres = genreStorage.getExistGenres(film).stream().toList();
 
         final String sqlQueryFilmGenres = "INSERT INTO genre_films(film_id, genre_id) " +
@@ -53,7 +53,7 @@ public class FilmGenreDbStorage implements FilmGenreStorage {
     }
 
     @Override
-    public List<Genre> getListGenreFilmId(Long filmId) {
+    public List<Genre> getListGenreFilmById(Long filmId) {
         List<Genre> result = new ArrayList<>();
 
         String filmGenresQuery = "SELECT genre_id, " +

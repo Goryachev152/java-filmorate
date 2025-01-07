@@ -15,7 +15,7 @@ public class GenreService {
 
     private final GenreStorage genreStorage;
 
-    public List<Genre> findAll() {
+    public List<Genre> getAllGenre() {
         return genreStorage.getAllGenre();
     }
 
