@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.AfterEach;
@@ -10,11 +9,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import ru.yandex.practicum.filmorate.adapters.LocalDateAdapter;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.model.Mpa;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,7 +21,6 @@ import java.time.LocalDate;
 
 public class FilmControllerTest {
 
-    FilmController filmController;
     Film film;
     HttpClient httpClient;
     Gson gson;
@@ -40,12 +35,16 @@ public class FilmControllerTest {
 
         httpClient = HttpClient.newHttpClient();
         uri = URI.create("http://localhost:8080/films");
-        filmController = new FilmController(new FilmService(new InMemoryFilmStorage(), new InMemoryUserStorage()));
+        Mpa mpa = Mpa.builder()
+                .id(1L)
+                .name("G")
+                .build();
         film = Film.builder()
                 .name("Name")
                 .description("Description")
                 .releaseDate(LocalDate.of(1998, 7, 25))
                 .duration(60)
+                .mpa(mpa)
                 .build();
         ctx = SpringApplication.run(FilmorateApplication.class);
     }

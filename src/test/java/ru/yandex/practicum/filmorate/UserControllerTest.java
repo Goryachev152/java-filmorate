@@ -9,10 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import ru.yandex.practicum.filmorate.adapters.LocalDateAdapter;
-import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.io.IOException;
 import java.net.URI;
@@ -22,7 +19,6 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 
 public class UserControllerTest {
-    UserController userController;
     User user;
     HttpClient httpClient;
     Gson gson;
@@ -37,12 +33,11 @@ public class UserControllerTest {
 
         httpClient = HttpClient.newHttpClient();
         uri = URI.create("http://localhost:8080/users");
-        userController = new UserController(new UserService(new InMemoryUserStorage()));
         user = User.builder()
                 .login("login")
                 .name("name")
                 .birthday(LocalDate.of(1998, 7, 25))
-                .email("gorych15200@yandex.ru")
+                .email("gorych15300@yandex.ru")
                 .build();
         ctx = SpringApplication.run(FilmorateApplication.class);
     }

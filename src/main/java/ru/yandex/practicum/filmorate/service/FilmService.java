@@ -6,10 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ParameterNotValidException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.LikeFilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +20,7 @@ import java.util.List;
 public class FilmService {
 
     private final FilmStorage filmStorage;
-
+    private final LikeFilmStorage likeFilmStorage;
     private final UserStorage userStorage;
 
     public List<Film> getFilms() {
@@ -28,8 +31,7 @@ public class FilmService {
         return filmStorage.createFilm(film);
     }
 
-    public Film getFilmId(Integer id) {
-       validNotFoundFilm(id);
+    public Film getFilmById(Long id) {
         return filmStorage.getFilmId(id);
     }
 
@@ -37,35 +39,41 @@ public class FilmService {
         if (count <= 0) {
             throw new ParameterNotValidException("количество фильмов", count.toString());
         }
-        return filmStorage.getPopularFilms(count);
+        return likeFilmStorage.getPopularFilms(count);
     }
 
     public Film updateFilm(Film updateFilm) {
-       validNotFoundFilm(updateFilm.getId());
+        validNotFoundFilm(updateFilm.getId());
         return filmStorage.updateFilm(updateFilm);
     }
 
-    public Film likeFilmUser(Integer idFilm, Integer idUser) {
+    public void addLikeFilmUser(Long idFilm, Long idUser) {
         validNotFoundFilm(idFilm);
         validNotFoundUser(idUser);
-        return filmStorage.likeFilmUser(idFilm, idUser);
+        likeFilmStorage.addLikeFilmUser(idFilm, idUser);
     }
 
-    public Film deleteLikeFilmUser(Integer idFilm, Integer idUser) {
-        validNotFoundFilm(idFilm);
-        validNotFoundUser(idUser);
-        return filmStorage.deleteLikeFilmUser(idFilm, idUser);
+    public void deleteLikeFilmUser(Long idFilm, Long idUser) {
+        Film film = validNotFoundFilm(idFilm);
+        User user = validNotFoundUser(idUser);
+        likeFilmStorage.deleteLikeFilmUser(film, user);
     }
 
-    private void validNotFoundUser(Integer idUser) {
-        if (userStorage.findById(idUser).isEmpty()) {
-            throw new NotFoundException("Пользователь с таким id = " + idUser + " не найден");
+    private Film validNotFoundFilm(Long id) {
+        Optional<Film> film = Optional.ofNullable(filmStorage.getFilmId(id));
+        if (film.isEmpty()) {
+            throw new NotFoundException("Пользоваетль " + id + " не найден");
+        } else {
+            return film.get();
         }
     }
 
-    private void validNotFoundFilm(Integer idFilm) {
-        if (filmStorage.findById(idFilm).isEmpty()) {
-            throw new NotFoundException("Фильм с таким id = " + idFilm + " не найден");
+    private User validNotFoundUser(Long id) {
+        Optional<User> user = Optional.ofNullable(userStorage.getUserId(id));
+        if (user.isEmpty()) {
+            throw new NotFoundException("Пользоваетль " + id + " не найден");
+        } else {
+            return user.get();
         }
     }
 }
