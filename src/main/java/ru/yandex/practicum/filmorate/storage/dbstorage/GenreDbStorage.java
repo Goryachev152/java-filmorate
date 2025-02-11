@@ -6,7 +6,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
@@ -59,7 +58,7 @@ public class GenreDbStorage implements GenreStorage {
                         if (genres.contains(genre.getId())) {
                             resultGenres.add(genre);
                         } else {
-                            throw new ValidationException("Указанный жанр не существует");
+                            throw new NotFoundException("Указанный жанр не существует");
                         }
                     }
             );

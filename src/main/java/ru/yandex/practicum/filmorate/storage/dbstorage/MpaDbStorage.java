@@ -6,7 +6,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
@@ -77,11 +76,11 @@ public class MpaDbStorage implements MpaStorage {
         try {
             count = jdbcTemplate.queryForObject(sqlQueryMpa, Long.class, film.getMpa().getId());
         } catch (EmptyResultDataAccessException e) {
-            throw new ValidationException("MPA id не существуют");
+            throw new NotFoundException("MPA id не существуют");
         }
 
         if (Objects.isNull(count) || count == 0) {
-            throw new ValidationException("MPA id не существует");
+            throw new NotFoundException("MPA id не существует");
         }
 
         return count;
