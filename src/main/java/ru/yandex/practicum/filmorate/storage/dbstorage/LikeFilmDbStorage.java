@@ -55,7 +55,6 @@ public class LikeFilmDbStorage implements LikeFilmStorage {
 
     @Override
     public List<Film> getPopularFilms(Integer count) {
-        String popularSql = "SELECT film_id FROM film_like";
         Comparator<Film> filmComparator = Comparator.comparingInt(film -> film.getLike().size());
         List<Film> popular = filmStorage.getFilms();
         return popular

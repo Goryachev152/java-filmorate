@@ -70,10 +70,10 @@ public class UserDbStorage implements UserStorage {
             stmt.setString(4, finalUser.getBirthday().toString());
             return stmt;
         }, keyHolder);
-        if (Objects.nonNull(keyHolder.getKey())) {
-            userId = keyHolder.getKey().longValue();
-        } else {
+        if (!Objects.nonNull(keyHolder.getKey())) {
             throw new NotFoundException("Ошибка добавления пользователя в таблицу");
+        } else {
+            userId = keyHolder.getKey().longValue();
         }
         log.info("Пользователь с id {} добавлен в сервис", userId);
         return User.builder()

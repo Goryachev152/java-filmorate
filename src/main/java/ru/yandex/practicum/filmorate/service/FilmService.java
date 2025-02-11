@@ -31,7 +31,7 @@ public class FilmService {
         return filmStorage.createFilm(film);
     }
 
-    public Film getFilmId(Long id) {
+    public Film getFilmById(Long id) {
         return filmStorage.getFilmId(id);
     }
 

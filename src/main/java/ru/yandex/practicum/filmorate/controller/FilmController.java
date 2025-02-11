@@ -32,7 +32,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilmId(@PathVariable Long id) {
-        return filmService.getFilmId(id);
+        return filmService.getFilmById(id);
     }
 
     @GetMapping("/popular")
